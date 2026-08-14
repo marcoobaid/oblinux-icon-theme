@@ -1,0 +1,32 @@
+[Icon Theme]
+Name=OBLinux
+Comment=OBLinux amber places icons, inherits Papirus for everything else
+Inherits=Papirus,hicolor
+Example=folder
+
+Directories=22x22/places,24x24/places,32x32/places,48x48/places,64x64/places
+
+[22x22/places]
+Context=Places
+Size=22
+Type=Fixed
+
+[24x24/places]
+Context=Places
+Size=24
+Type=Fixed
+
+[32x32/places]
+Context=Places
+Size=32
+Type=Fixed
+
+[48x48/places]
+Context=Places
+Size=48
+Type=Fixed
+
+[64x64/places]
+Context=Places
+Size=64
+Type=Fixed
