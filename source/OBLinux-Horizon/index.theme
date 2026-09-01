@@ -1,0 +1,26 @@
+[Icon Theme]
+Name=OBLinux Horizon Pilot
+Comment=Horizon Layer light-appearance pilot; not for production use
+Inherits=Papirus,hicolor
+Directories=scalable/places,scalable/devices,scalable/categories
+
+[scalable/places]
+Size=128
+MinSize=16
+MaxSize=256
+Type=Scalable
+Context=Places
+
+[scalable/devices]
+Size=128
+MinSize=16
+MaxSize=256
+Type=Scalable
+Context=Devices
+
+[scalable/categories]
+Size=128
+MinSize=16
+MaxSize=256
+Type=Scalable
+Context=Categories

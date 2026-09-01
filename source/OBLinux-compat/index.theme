@@ -1,0 +1,5 @@
+[Icon Theme]
+Name=OBLinux (Horizon compatibility)
+Comment=Compatibility alias for OBLinux Horizon Dark
+Inherits=OBLinux-Horizon-Dark,OBLinux-Horizon,hicolor
+Directories=

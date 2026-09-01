@@ -1,69 +1,67 @@
 # oblinux-icon-theme
 
-OBLinux's default icon theme: amber-accented `places` icons (folders,
-the home/user icon) on top of [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme),
-which this theme inherits for everything else — application icons,
-mimetypes, devices, actions, status icons, and so on. Only the folder
-and home-icon family is recolored; application icons keep their own
-brand colors, same as every other icon theme's "folder color" feature
-(this theme doesn't touch anything Papirus itself doesn't offer a
-color variant for).
+OBLinux's Horizon icon-theme package for Arch Linux. It provides the same two
+GNOME theme names and visual treatment as `oblinux-debian-iso-dev`:
 
-## License and attribution
+- `OBLinux-Horizon` — complete Papirus coverage transformed into the Obsidian
+  Horizon palette, with recognizable application artwork placed in the Horizon
+  container and the approved 20-icon scalable identity layer overlaid first.
+- `OBLinux-Horizon-Dark` — transformed Papirus Dark coverage, inheriting
+  `OBLinux-Horizon,hicolor`.
+- `OBLinux` — metadata-only compatibility alias inheriting Horizon Dark. It
+  keeps the current Arch ISO default working until that consumer explicitly
+  selects `OBLinux-Horizon-Dark`.
 
-GPL-3.0, same as Papirus — this is a derivative work and stays under
-its upstream license. All non-`places` icons, and the underlying shape
-of the `places` icons themselves, are Papirus's own work
-([PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme)),
-derived in turn from the Paper Icon Set. See `AUTHORS`.
+The packaged GLib schema override selects `OBLinux-Horizon-Dark` as GNOME's
+system default, matching Debian without overwriting an existing user's explicit
+setting.
 
-## What was actually changed
-
-Derived from Papirus's `orange` folder-color preset (release
-`20260801`), all 81 "places" icon files (base `folder`/`folder-open`,
-~70 named kinds — Documents, Downloads, Music, Pictures, Videos, Git,
-Steam, etc. — plus the `user-home`/`user-desktop` family), across
-every size Papirus itself ships color variants for: 22, 24, 32, 48,
-64px (matching Papirus's own [`papirus-folders`](https://github.com/PapirusDevelopmentTeam/papirus-folders)
-tool, which only touches these same five sizes — 16px folder icons
-have no color variants upstream).
-
-Each source SVG uses exactly two fill colors for the folder shape
-itself (plus, on many icons, an unrelated third dark color for a small
-badge glyph — e.g. the git branch icon on `folder-git.svg` — which was
-left untouched, it's not part of the folder's own color):
-
-| Role | Papirus orange | OBLinux amber |
-|---|---|---|
-| Main/front fill | `#ee923a` | `#d68a3c` (OBLinux's Amber, exact) |
-| Back/shadow fill | `#dd772f` | `#b87027` (derived: same hue/saturation as Amber, ~10 points darker lightness, matching the ratio between Papirus's own two orange tones) |
+The generated full icon trees are package build artifacts, not committed
+source. The tracked inputs are the approved OBLinux scalable overlay and the
+reviewed transformation used by the Debian implementation. Arch's
+`papirus-icon-theme` `20260801-1` is an exact build dependency; it is transformed
+during `makepkg` and is not required at runtime.
 
 ## Building
+
+On Arch Linux:
 
 ```bash
 makepkg -s
 ```
 
-Then publish via [`oblinux_repo`](https://github.com/marcoobaid/oblinux_repo),
-same as any other custom OBLinux package:
+This produces `oblinux-icon-theme-2.0.0-1-any.pkg.tar.zst`. The package installs
+its themes below `/usr/share/icons/` and includes the Papirus attribution notice
+and GPL-3.0 license. Arch's GLib and icon-cache hooks process the installed
+metadata. Generated `src/`, `pkg/`, and package archives must not be committed.
+
+## Validation
 
 ```bash
-cp oblinux-icon-theme-*.pkg.tar.zst /path/to/oblinux_repo/x86_64/
-cd /path/to/oblinux_repo/x86_64/
-./update_repo.sh
+tar -tf oblinux-icon-theme-2.0.0-1-any.pkg.tar.zst
+python source/validate_icon_themes.py pkg/oblinux-icon-theme/usr/share/icons
+find -L pkg/oblinux-icon-theme/usr/share/icons/OBLinux-Horizon \
+  pkg/oblinux-icon-theme/usr/share/icons/OBLinux-Horizon-Dark -type l -print
 ```
 
-## Installing
+The second command must print nothing. Both generated `index.theme` files must
+list only directories present in their respective theme and preserve these
+inheritance chains:
 
-```
-[oblinux_repo]
-SigLevel = Required TrustedOnly
-Server = https://marcoobaid.github.io/$repo/$arch
-```
-```bash
-sudo pacman -S oblinux-icon-theme
+```text
+OBLinux-Horizon      -> hicolor
+OBLinux-Horizon-Dark -> OBLinux-Horizon,hicolor
+OBLinux              -> OBLinux-Horizon-Dark,OBLinux-Horizon,hicolor
 ```
 
-`papirus-icon-theme` (official Arch `extra` package) is pulled in
-automatically as a dependency — this theme is only the amber override
-layer on top of it, not a full icon set on its own.
+## License and attribution
+
+GPL-3.0-only. The complete generated themes are derivatives of Papirus Icon
+Theme, itself derived from Paper Icon Set. See `AUTHORS`, `LICENSE`, and
+`PAPIRUS-NOTICE.md`.
+
+## Publishing
+
+Do not publish from this repository. Copy the built package to
+`oblinux_repo/x86_64/`, sign it and regenerate that repository's signed database
+with `update_repo.sh`, commit the repository changes, and push `oblinux_repo`.
